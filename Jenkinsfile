@@ -1,4 +1,4 @@
-pipeline{
+pipeline {
     agent any
 
     environment {
@@ -6,57 +6,64 @@ pipeline{
         GCP_PROJECT = 'skilled-flight-461215-g9'
         GCLOUD_PATH = '/var/jenkins_home/google-cloud-sdk/bin'
     }
-    
-    stages{
-        stage('Clonning GitHub Repo To Jenkins'){
-            steps{
-                script{
-                    echo 'Clonning GitHub Repo To Jenkins ..........'
-                    checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-token', url: 'https://github.com/shanks1554/Hotel-Reservation-Prediction.git']])
+
+    stages {
+
+        stage('Clone GitHub Repository') {
+            steps {
+                script {
+                    echo 'Cloning GitHub Repository...'
+                    checkout scmGit(
+                        branches: [[name: '*/main']],
+                        userRemoteConfigs: [[
+                            credentialsId: 'github-token',
+                            url: 'https://github.com/shanks1554/Hotel-Reservation-Prediction.git'
+                        ]]
+                    )
                 }
             }
         }
 
-        stage('Setting up virtual environment and Installing dependancies'){
-            steps{
-                script{
-                    echo 'Setting up virtual environment and Installing dependancies ..........'
+        stage('Install Dependencies in Virtual Environment') {
+            steps {
+                script {
+                    echo 'Setting up virtual environment and installing dependencies...'
                     sh '''
-                    python -m venv ${VENV_DIR}
-                    . ${VENV_DIR}/bin/activate
-                    pip install --upgrade pip
-                    pip install -e .
+                        python -m venv ${VENV_DIR}
+                        . ${VENV_DIR}/bin/activate
+                        pip install --upgrade pip
+                        pip install -e .
                     '''
                 }
             }
         }
 
-        stage('Building and Pushing Docker Image to GCR'){
-            steps{
-                withCredentials([file(credentialsId: 'gcp-key' , variable : 'GOOGLE_APPLICATION_CREDENTIALS')]){
-                    script{
-                        echo 'Building and Pushing Docker Image to GCR.............'
+        stage('Build and Push Docker Image to GCR') {
+            steps {
+                withCredentials([file(credentialsId: 'gcp-key', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                    script {
+                        echo 'Building and pushing Docker image to GCR...'
                         sh '''
-                        export PATH=$PATH:${GCLOUD_PATH}
+                            export PATH=${GCLOUD_PATH}:$PATH
+                            
+                            # Activate GCP service account
+                            gcloud auth activate-service-account --key-file="${GOOGLE_APPLICATION_CREDENTIALS}"
 
+                            # Set the project
+                            gcloud config set project ${GCP_PROJECT}
 
-                        gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
+                            # Configure Docker to use gcloud credentials
+                            gcloud auth configure-docker --quiet
 
-                        gcloud config set project ${GCP_PROJECT}
+                            # Build the Docker image
+                            docker build -t gcr.io/${GCP_PROJECT}/ml-project:latest .
 
-                        gcloud auth configure-docker --quiet
-
-                        docker build -t gcr.io/${GCP_PROJECT}/ml-project:latest .
-
-                        docker push gcr.io/${GCP_PROJECT}/ml-project:latest 
-
+                            # Push the Docker image to GCR
+                            docker push gcr.io/${GCP_PROJECT}/ml-project:latest
                         '''
                     }
                 }
             }
         }
-
-
-
     }
 }
