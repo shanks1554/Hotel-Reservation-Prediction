@@ -1,0 +1,136 @@
+/* Reset some defaults */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Container styling */
+.container {
+    background: #fff;
+    padding: 2.5rem 2rem;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    max-width: 430px;
+    width: 100%;
+    margin: 2rem;
+    transition: box-shadow 0.3s;
+}
+
+.container:hover {
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.22);
+}
+
+h2 {
+    text-align: center;
+    color: #2d3a4b;
+    margin-bottom: 1.5rem;
+    letter-spacing: 1px;
+}
+
+/* Form styling */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+label {
+    font-size: 1rem;
+    color: #3a4a5b;
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+}
+
+input[type="number"],
+select {
+    padding: 0.7rem 0.9rem;
+    border: 1.5px solid #cfd8dc;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #f7fafc;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+input[type="number"]:focus,
+select:focus {
+    border-color: #6c63ff;
+    box-shadow: 0 0 0 2px #eceaff;
+    background: #fff;
+}
+
+/* Button styling */
+button[type="submit"] {
+    margin-top: 1.2rem;
+    padding: 0.9rem;
+    background: linear-gradient(90deg, #6c63ff 60%, #48c6ef 100%);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(76, 110, 245, 0.08);
+}
+
+button[type="submit"]:hover {
+    background: linear-gradient(90deg, #48c6ef 0%, #6c63ff 100%);
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 4px 16px rgba(76, 110, 245, 0.13);
+}
+
+/* Result styling */
+.result {
+    margin-top: 2rem;
+    padding: 1rem;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #f8fafc 70%, #e0eafc 100%);
+    box-shadow: 0 1px 8px rgba(76, 110, 245, 0.06);
+    text-align: center;
+    font-size: 1.1rem;
+    color: #2d3a4b;
+    animation: fadeIn 0.8s;
+}
+
+.result p {
+    margin: 0;
+    font-weight: 600;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px);}
+    to { opacity: 1; transform: translateY(0);}
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    .container {
+        padding: 1.5rem 0.7rem;
+        max-width: 98vw;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    input, select, button {
+        font-size: 1rem;
+    }
+}
